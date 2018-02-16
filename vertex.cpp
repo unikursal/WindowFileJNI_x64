@@ -31,6 +31,10 @@ Vertex& Vertex::operator=(const Vertex& obj){
     return *this;
 }
 
+void Vertex::setWeights(std::vector<double> w){
+    weights.insert(weights.end(), w.begin(), w.end());
+}
+
 QStringList Vertex::getWords() const{
     return words;
 }

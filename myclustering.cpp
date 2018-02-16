@@ -2,53 +2,36 @@
 
 #include<vector>
 #include<QTextStream>
-
-#include <dlib/clustering.h>
+#include<actionswithvectors.h>
 
 MyClustering::MyClustering()
 {
 
 }
 
-void MyClustering::clustering(){
+void MyClustering::clustering(std::vector<Vertex*>& wertices){
     using namespace dlib;
 
+    ActionsWithVectors awv;
+
     QTextStream out(stdout);
-
     std::vector<sample_pair> pairs;
-
-    pairs.push_back(sample_pair(1,2,1));
-    pairs.push_back(sample_pair(1,3,1));
-    pairs.push_back(sample_pair(2,3,1));
-
-    pairs.push_back(sample_pair(3,4,5));
-    pairs.push_back(sample_pair(3,5,6));
-    pairs.push_back(sample_pair(3,12,7));
-
-
-    pairs.push_back(sample_pair(4,5,2));
-    pairs.push_back(sample_pair(4,6,2));
-
-    pairs.push_back(sample_pair(5,7,2));
-    pairs.push_back(sample_pair(5,12,6));
-
-    pairs.push_back(sample_pair(6,7,2));
-
-    pairs.push_back(sample_pair(8,9,2));
-    pairs.push_back(sample_pair(8,10,1));
-    pairs.push_back(sample_pair(8,12,1));
-
-    pairs.push_back(sample_pair(9,10,1));
-    pairs.push_back(sample_pair(10,11,1));
-    pairs.push_back(sample_pair(10,12,2));
-    pairs.push_back(sample_pair(11,12,1));
-
-
-
-
     std::vector<unsigned long> labels;
 
-    out<<newman_cluster(pairs, labels);
+    for(int i = 0; i < wertices.size(); i++){
+        std::vector<int> ref = wertices[i]->getReferences();
 
+        for(int j = 0; j < ref.size(); j++){
+            int k = ref[j];
+
+            int similarity = awv.getSimilarityMeasure(wertices[i]->getWeights(), wertices[k]->getWeights());
+
+            //value of w must more 1;
+            double w = 1 + similarity;
+
+            pairs.push_back(sample_pair(i, k, w));
+        }
+    }
+
+    out<<"clustering res  " << newman_cluster(pairs,labels);
 }
-

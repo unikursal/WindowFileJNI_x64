@@ -38,11 +38,17 @@ std::string MyReadFile::getHeaders(std::string path){
     return header;
 }
 
-std::vector<std::vector<double>> MyReadFile::findWords(std::list<MyPair> words, std::string pathFile, QProgressBar* pBar){
+void MyReadFile::findWords(std::vector<Vertex*>& vertices, std::string pathFile, QProgressBar* pBar){
     int numberOfBytes = SIZE_PAGE * boost::iostreams::mapped_file_source::alignment(),
-            offset = 0, maxSizeWords = words.size();
+            offset = 0, maxSizeWords = vertices.size();
 
-    std::vector<std::vector<double>> weights(words.size(), std::vector<double>(300));
+    std::list<MyPair> words;
+    for(int i = 0; i < vertices.size(); i++){
+        if(vertices[i]->getWords().size() > 0){
+            QString qstr = vertices[i]->getWords().at(0);
+            words.push_back({i,qstr.toStdString()});
+        }
+    }
 
     struct stat filestatus;
     stat(pathFile.data(), &filestatus);
@@ -89,11 +95,21 @@ std::vector<std::vector<double>> MyReadFile::findWords(std::list<MyPair> words, 
                        if(numb_word >= 0){
 
                           std::vector<double> v = createVector(buf);
-                          weights[numb_word] = v;
+                          vertices[numb_word]->setWeights(v);
 
                           //change progress bar
                           int changePB = (((double)(maxSizeWords -  words.size())) / maxSizeWords) * 90 + 10;
                           pBar->setValue(changePB);
+
+                          if(words.size() == 0){
+                              std::cout<<"size list  = 0 ";
+                              buf.clear();
+
+                              is.close();
+                              file.close();
+
+                              return;
+                          }
                        }
                    }
                 }
@@ -106,7 +122,7 @@ std::vector<std::vector<double>> MyReadFile::findWords(std::list<MyPair> words, 
                 QMessageBox box;
                 box.setText(QString("Error in open file  "));
                 box.exec();
-                return weights;
+                return;
             }
 
             offset += numberOfBytes;
@@ -118,10 +134,11 @@ std::vector<std::vector<double>> MyReadFile::findWords(std::list<MyPair> words, 
         QMessageBox box;
         box.setText(QString("Error in open file  ") + e.what());
         box.exec();
-        return weights;
     }
 
-    return weights;
+    //If word not find in vocabulary
+    for(MyPair mp: words)
+        vertices[mp.n]->setWeights(std::vector<double>(300, 0));
 }
 
 std::vector<double> MyReadFile::findWord(std::string word, std::string pathFile){
@@ -223,12 +240,7 @@ std::vector<double> MyReadFile::createVector(std::string str){
     std::vector<double> results(300);
     double d = 0;
     for(int i = 0; i < tmp_vec.size(); i++){
-        try{
-           d  = std::stod(tmp_vec[i]);
-        }catch(std::invalid_argument& ia){
-            std::cout<<ia.what()<<" ----------\n";
-            d=0;
-        }
+        d  = std::stod(tmp_vec[i]);
 
         results[i] = d;
     }

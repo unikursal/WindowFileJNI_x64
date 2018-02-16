@@ -60,7 +60,7 @@ int MyJavaInterface::initializeJVM(){
 
 std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
     jbyteArray array;
-    jstring path = env->NewStringUTF(path_to_file.c_str());
+    jstring path = env->NewStringUTF(path_to_file.data());
     array = (jbyteArray) env->CallObjectMethod(obj, mId, path);
 
     int size = env->GetArrayLength(array);
@@ -99,8 +99,6 @@ std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
         v_vertex.push_back(v);
     }
 
-
-    //env->ReleaseStringUTFChars();
     env->ReleaseByteArrayElements(array, bytes, 0);
 
     return v_vertex;

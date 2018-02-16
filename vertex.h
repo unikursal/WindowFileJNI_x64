@@ -18,6 +18,7 @@ public:
     Vertex(const Vertex&);
     Vertex& operator =(const Vertex&);
 
+    void setWeights(std::vector<double>);
     QStringList getWords() const;
     std::vector<int> getReferences() const;
     std::vector<double> getWeights() const;
