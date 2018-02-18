@@ -71,7 +71,7 @@ void MainWindow::on_buttonFile_clicked()
 
     ui->progressBar->setValue(5);
 
-    if(init != 0){
+    if(this->init != 0){
         QMessageBox box;
         box.setText(QString("Error in inizialize JVM " + QString(init)));
         box.exec();

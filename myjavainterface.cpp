@@ -2,8 +2,6 @@
 
 #include <jni.h>
 #include<cstring>
-#include<iostream>
-#include<QTextStream>
 #include<QString>
 
 #include "vertex.h"
@@ -18,11 +16,10 @@ MyJavaInterface::~MyJavaInterface(){
 }
 
 int MyJavaInterface::initializeJVM(){
-    char path[] = "-Djava.class.path=D:\\graphtLE.jar\\";
+    char path[] = "-Djava.class.path=D:\\grapht.jar";
     JavaVMOption options[1];
     JavaVMInitArgs vm_args;
     jint status;
-    jmethodID constructor;
 
     options[0].optionString = path;
 
@@ -33,32 +30,31 @@ int MyJavaInterface::initializeJVM(){
     status = JNI_CreateJavaVM(&jvm, (void**)&env, &vm_args);
 
     if(status == JNI_OK){
-        cls = env->FindClass("Action");
+        this->cls = env->FindClass("Action");
 
-        constructor = env->GetMethodID(cls, "<init>", "()V");
+        if(cls != 0){
+            this->constructor = env->GetMethodID(cls, "<init>", "()V");
 
-        if(constructor != 0){
-            obj = env->NewObject(cls, constructor);
-
-            if(cls != 0){
-                mId = env->GetMethodID(cls, "getGraphText", "(Ljava/lang/String;)[B");
+            if(constructor != 0){
+                this->mId = env->GetMethodID(cls, "getGraphText", "(Ljava/lang/String;)[B");
 
                 if(mId != 0)
                     return 0;
 
-                return -2;
-
+                return -4;
             }
-            return -3;
 
+            return -3;
         }
-        return -4;
+        return -2;
     }
 
     return -1;
 }
 
 std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
+    jobject obj = env->NewObject(cls, constructor);
+
     jbyteArray array;
     jstring path = env->NewStringUTF(path_to_file.data());
     array = (jbyteArray) env->CallObjectMethod(obj, mId, path);
@@ -72,6 +68,7 @@ std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
     std::vector<Vertex*> v_vertex;
 
     while(i < size / 2){
+        //length of word or code of exception
         short length = buf[i];
         i++;
 
@@ -87,19 +84,32 @@ std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
             str.append(QChar(buf[i]));
         }
 
-        int* ref_size = (int*) &buf[i];
-        std::vector<int> ref(ref_size[0]);
+        int* pointer = (int*) &buf[i];
 
-        for(int j = 1; j < ref_size[0] + 1; j++)
-            ref[j - 1] = ref_size[j];
+        //size of array reference
+        int ref_size = pointer[0];
+        std::vector<int> ref(ref_size);
 
-        i += (ref_size[0] + 1) * 2;
+        int j = 1;
+        for(; j < ref_size + 1; j++)
+            ref[j - 1] = pointer[j];
 
-        Vertex* v = new Vertex(str, ref);
+        //size array number sentences
+        int sent_size = pointer[j];
+        std::vector<int> sent(sent_size);
+        j++;
+        for(int k = 0; k < sent_size; k++, j++)
+            sent[k] = pointer[j];
+
+        i += (ref_size + 1) * 2 + (sent_size + 1) * 2;
+
+        Vertex* v = new Vertex(str, ref, sent);
         v_vertex.push_back(v);
     }
 
     env->ReleaseByteArrayElements(array, bytes, 0);
+    env->DeleteLocalRef(array);
+    env->DeleteLocalRef(obj);
 
     return v_vertex;
 }

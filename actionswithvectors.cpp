@@ -1,6 +1,7 @@
 #include "actionswithvectors.h"
 
 #include<cmath>
+#include <stdexcept>
 
 ActionsWithVectors::ActionsWithVectors()
 {
@@ -17,8 +18,9 @@ double ActionsWithVectors::getSimilarityMeasure(const std::vector<double>& v1, c
         sum_pow2 += std::pow(v2[i], 2);
     }
 
-    if(sum_pow1 == 0 || sum_pow2 == 0)
-        return -1;
+    if(sum_pow1 == 0 || sum_pow2 == 0){
+        throw std::overflow_error("Divide by zero exception");
+    }
 
     res = sum_multiply / (std::sqrt(sum_pow1) * std::sqrt(sum_pow2));
 

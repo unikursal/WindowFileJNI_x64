@@ -26,7 +26,6 @@ private:
     Ui::MainWindow *ui;
     MyJavaInterface mji;
     int init;
-
 };
 
 #endif // MAINWINDOW_H

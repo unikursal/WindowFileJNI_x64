@@ -13,9 +13,7 @@ private:
     JNIEnv *env;
     JavaVM *jvm;
     jclass cls;
-    jmethodID mId;
-    jobject obj;
-
+    jmethodID mId, constructor;
 public:
     MyJavaInterface();
     ~MyJavaInterface();

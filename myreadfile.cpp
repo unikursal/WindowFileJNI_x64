@@ -1,16 +1,13 @@
 #include "myreadfile.h"
 
 #include <QMessageBox>
-#include<QTextStream>
-
-#include<iostream>
 #include<fstream>
+#include<iostream>
 #include<sys/types.h>
 #include<sys/stat.h>
 #include<vector>
 #include<sstream>
 #include<cstring>
-#include <stdexcept>
 #include<utility>
 
 #include <boost/iostreams/device/mapped_file.hpp>
@@ -67,7 +64,7 @@ void MyReadFile::findWords(std::vector<Vertex*>& vertices, std::string pathFile,
 
                while(std::getline(is, buf)){
                  if( !readHeader){
-                     header = buf;
+                     this->header = buf;
                      readHeader = true;
                      continue;
                   }
