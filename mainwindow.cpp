@@ -1,19 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "myreadfile.h"
-#include "myjavainterface.h"
-#include "actionswithvectors.h"
-#include "myclustering.h"
-
-#include <QApplication>
-#include <QMessageBox>
-#include <QTextStream>
-
-#include<iostream>
-#include<cstring>
-#include<list>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -78,19 +65,19 @@ void MainWindow::on_buttonFile_clicked()
         return;
     }
 
-    std::vector<Vertex*> vertices = mji.createVertex(path.toStdString());
+    std::vector<MyWord*> words = mji.createVertex(path.toStdString());
 
     ui->progressBar->setValue(10);
 
     MyReadFile myReader;
     std::string pathToVocabulary = ui->checkBox->isChecked() ? PATH_TO_ORIG_FILE : PATH_TO_SMALL_FILE;
-    myReader.findWords(vertices, pathToVocabulary, ui->progressBar);
+    myReader.findWords(words, pathToVocabulary, ui->progressBar);
 
     ui->progressBar->setValue(100);
 
     MyClustering mc;
-    mc.clustering(vertices);
+    mc.clustering(words);
 
-    for(int i = 0; i < vertices.size(); i++)
-        delete vertices[i];
+    for(int i = 0; i < words.size(); i++)
+        delete words[i];
 }

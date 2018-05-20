@@ -35,7 +35,7 @@ std::string MyReadFile::getHeaders(std::string path){
     return header;
 }
 
-void MyReadFile::findWords(std::vector<Vertex*>& vertices, std::string pathFile, QProgressBar* pBar){
+void MyReadFile::findWords(std::vector<MyWord*>& vertices, std::string pathFile, QProgressBar* pBar){
     int numberOfBytes = SIZE_PAGE * boost::iostreams::mapped_file_source::alignment(),
             offset = 0, maxSizeWords = vertices.size();
 

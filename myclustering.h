@@ -3,13 +3,14 @@
 
 #include <dlib/clustering.h>
 
-#include "vertex.h"
+#include "myword.h"
+#include "mywmdmodel.h"
 
 class MyClustering
 {
 public:
     MyClustering();
-    void clustering(std::vector<Vertex*>&);
+    void clustering(std::vector<MyWord*>&);
 };
 
 #endif // MYCLUSTERING_H

@@ -4,7 +4,7 @@
 #include<cstring>
 #include<QString>
 
-#include "vertex.h"
+#include "myword.h"
 
 MyJavaInterface::MyJavaInterface()
 {
@@ -52,7 +52,7 @@ int MyJavaInterface::initializeJVM(){
     return -1;
 }
 
-std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
+std::vector<MyWord*> MyJavaInterface::createVertex(std::string path_to_file){
     jobject obj = env->NewObject(cls, constructor);
 
     jbyteArray array;
@@ -65,7 +65,7 @@ std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
     uint16_t* buf = (uint16_t*)bytes;
 
     int i = 0, word_length = 0;
-    std::vector<Vertex*> v_vertex;
+    std::vector<MyWord*> v_vertex;
 
     while(i < size / 2){
         //length of word or code of exception
@@ -103,7 +103,7 @@ std::vector<Vertex*> MyJavaInterface::createVertex(std::string path_to_file){
 
         i += (ref_size + 1) * 2 + (sent_size + 1) * 2;
 
-        Vertex* v = new Vertex(str, ref, sent);
+        MyWord* v = new MyWord(str, ref, sent);
         v_vertex.push_back(v);
     }
 

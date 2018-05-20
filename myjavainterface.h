@@ -5,7 +5,7 @@
 #include<string>
 #include<vector>
 
-#include "vertex.h"
+#include "myword.h"
 
 class MyJavaInterface
 {
@@ -19,7 +19,7 @@ public:
     ~MyJavaInterface();
 
     int initializeJVM();
-    std::vector<Vertex*> createVertex(std::string path);
+    std::vector<MyWord*> createVertex(std::string path);
 };
 
 #endif // MYJAVAINTERFACE_H

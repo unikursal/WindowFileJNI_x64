@@ -2,7 +2,20 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
+#include<iostream>
+#include<cstring>
+#include<list>
+
 #include "myjavainterface.h"
+#include "myreadfile.h"
+#include "myjavainterface.h"
+#include "actionswithvectors.h"
+#include "myclustering.h"
+
+#include <QApplication>
+#include <QMessageBox>
+#include <QTextStream>
 
 namespace Ui {
 class MainWindow;

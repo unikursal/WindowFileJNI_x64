@@ -1,11 +1,10 @@
 #ifndef MYREADFILE_H
 #define MYREADFILE_H
 
-#include<vertex.h>
+#include<myword.h>
 
 #include<cstring>
 #include<vector>
-#include<utility>
 #include<list>
 #include<QProgressBar>
 
@@ -31,7 +30,7 @@ public:
     const int SEGMENT_SIZE = 4096;
 
     std::string getHeaders(std::string path);
-    void findWords(std::vector<Vertex*>&, std::string path, QProgressBar* pBar);
+    void findWords(std::vector<MyWord*>&, std::string path, QProgressBar* pBar);
     std::vector<double> findWord(std::string word, std::string path);
 };
 
